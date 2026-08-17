@@ -21,7 +21,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 
-/** Editorial Growth Atlas — evidence-led Arabic portfolio: ink/ivory editorial reading, signal-blue routes, teal discovery, and gold proof. */
+/** Saudi editorial portfolio — Arabic-first reading, documented evidence, and direct project storytelling without unverified claims. */
 
 type Frame = { src: string; alt: string; label: string; tone?: "wide" | "tall" | "document" };
 type Point = { x: number; y: number };
@@ -205,6 +205,39 @@ const cases: CaseStudy[] = [
   },
 ];
 
+const caseNarratives: Record<string, Array<{ label: string; title: string; body: string }>> = {
+  "01": [
+    { label: "السياق", title: "القرار يبدأ بالمشهد", body: "في الفعاليات والخيام الأوروبية، لا تكفي قائمة خدمات منفصلة عن الصورة. يبدأ المسار من مشاهد الفعالية، ثم يربطها بالخدمات والمعرض حتى يفهم الزائر طبيعة التجربة قبل الدخول في التفاصيل." },
+    { label: "التنفيذ", title: "طبقات واضحة بدلاً من صفحة مزدحمة", body: "توزعت المادة بين واجهة رئيسية ذات أثر بصري، وصفحة خدمات، ومعرض، ونسخة جوال. هذا التقسيم يجعل الانتقال من الانطباع إلى الاستكشاف منطقياً بدلاً من وضع كل الرسائل في شاشة واحدة." },
+    { label: "ما يثبته الملف", title: "لقطات منشورة وموكابات للقراءة", body: "تظهر لقطات الموقع الفعلي بجانب الموكابات وبطاقات المزايا وصور الخيام. المواد تشرح كيف صيغت التجربة بصرياً ولا تتضمن أرقام أداء أو مبيعات غير متاحة في المصدر." },
+  ],
+  "02": [
+    { label: "السياق", title: "خدمة محلية تحتاج جواباً سريعاً", body: "عند البحث عن زجاج سيكوريت في المدينة المنورة، يحتاج العميل إلى فهم نطاق الخدمة ومدى تخصص المؤسسة قبل أن يقرر التواصل. لذلك وضعت الخدمة والسياق المحلي في مقدمة القراءة." },
+    { label: "التنفيذ", title: "الخدمة ثم الأعمال ثم التواصل", body: "نظمت التجربة على طبقات: تعريف مباشر، صفحة خدمات قابلة للمسح، ثم معرض للأعمال. هذه البنية تقلل الحاجة إلى التخمين وتمنح الزائر نقاطاً واضحة قبل الانتقال إلى التواصل." },
+    { label: "طبقة الثقة", title: "الإثبات حاضر مع حماية البيانات", body: "يتضمن الملف لوحات وإثباتات تجارية مموهة. الغرض منها توضيح وجود طبقة مرجعية للمؤسسة، مع حجب البيانات غير اللازمة للعرض العام." },
+  ],
+  "03": [
+    { label: "السياق", title: "تعدد الخدمات يحتاج هيكلاً لا ضجيجاً", body: "عندما تتنوع الخدمات، يصبح ترتيبها جزءاً من قيمة الموقع. عالجت التجربة ذلك بتوجيه الزائر من التعريف العام إلى تصنيف الخدمات، بدلاً من تركه أمام قائمة طويلة متجاورة." },
+    { label: "التنفيذ", title: "تحويل التعقيد إلى مسار قابل للتصرف", body: "توضح الصفحة الرئيسية هوية العرض، بينما تمنح صفحة الخدمات كل فئة مساحة مستقلة. تظهر كذلك موكابات ولقطات للمقاطع الأساسية كي تكون بنية الرحلة قابلة للمراجعة وليست وصفاً نظرياً." },
+    { label: "طبقة الثقة", title: "أدلة مموهة بحماية مقصودة", body: "تظهر لوحة الإثباتات والمستندات المرافقة بشكل مموه لحماية بيانات السجل والضريبة وقوى والعنوان. لا يُستعمل التمويه لتضخيم الادعاء بل للفصل بين التحقق المرجعي والبيانات الخاصة." },
+  ],
+  "04": [
+    { label: "السياق", title: "القرار الصناعي يسبقه تحقق", body: "في قطاع تشكيل المعادن، لا تكفي اللغة التسويقية وحدها. يحتاج الزائر إلى فهم القدرات المعروضة ورؤية الشهادات والاعتمادات بوصفها جزءاً من سياق اتخاذ القرار." },
+    { label: "التنفيذ", title: "لغة صناعية مرتبة وقابلة للفحص", body: "يجمع الموقع بين واجهة رئيسية وطبقات للقدرات الصناعية ومقاطع من التجربة المنشورة. التركيز على الوضوح: ماذا تقدّم الشركة، وأين يجد الزائر دليل الاعتماد دون أن يبحث عنه خارج المسار." },
+    { label: "طبقة الثقة", title: "الشهادات تُعرض بأمان", body: "يعرض الملف لوحة شهادات واعتمادات مع نسخ مموهة. أُخفيت أرقام المراجع والتوقيعات وبيانات الاتصال في النسخة العامة، بينما بقيت طبيعة الإثبات ودوره في القصة واضحين." },
+  ],
+  "05": [
+    { label: "السياق", title: "الاعتماد هو أول رسالة", body: "بالنسبة لموزع زين 5G، تأتي صفة الموزع المعتمد قبل مقارنة الباقات. لذلك تعرّف الواجهة بصفة الاعتماد والخدمة أولاً، ثم تنقل المستخدم إلى الخيارات ذات الصلة." },
+    { label: "التنفيذ", title: "من الثقة إلى الباقة ثم التفعيل", body: "تعرض اللقطات مساراً واضحاً بين الواجهة الرئيسية والباقات ونقاط القرار. الهدف من التنظيم هو جعل الخطوة المناسبة قابلة للعثور عليها من دون تشتت." },
+    { label: "حدود القراءة", title: "الملف يشرح المسار ولا يخمّن أثره", body: "تثبت المواد شكل الترتيب البصري ومسار العرض كما ظهر في الموقع. لا تنسب هذه الحالة نسب تحويل أو نتائج مبيعات أو تأكيدات خارج ما هو معروض في اللقطات." },
+  ],
+  "06": [
+    { label: "السياق", title: "منتج يحتاج أن يُتخيّل قبل طلبه", body: "الأفران والمشبات منتجات ترتبط بالمكان والدفء والاستخدام. لذلك بُني العرض ليدخل الزائر إلى عالم المنتج بصرياً قبل أن يطلب استشارة أو يقارن بين الخيارات." },
+    { label: "التنفيذ", title: "واجهة دافئة وشبكة منتجات منظمة", body: "توضح الصفحة الرئيسية النبرة البصرية للعلامة، بينما تقدم شبكة المنتجات ومسارات العرض نقاطاً أكثر تحديداً للاستكشاف. تتجنب التجربة خلط هذا المسار مع نمط مواقع الخدمات." },
+    { label: "ما يثبته الملف", title: "رحلة عرض لا وعد تجاري", body: "تُظهر اللقطات الصفحة الرئيسية وشبكة المنتجات والمقاطع ذات الصلة بطلب الاستشارة. وهي توثق بناء التجربة المنشورة من دون إضافة ادعاءات عن مبيعات أو طلبات غير مثبتة." },
+  ],
+};
+
 const navItems = [
   { label: "الرؤية", href: "#vision" },
   { label: "المواقع", href: "#websites" },
@@ -228,13 +261,18 @@ function AssetTile({ frame, onOpen, index = 0 }: { frame: Frame; onOpen: (frame:
   return <button className={`asset-tile ${layout}`} onClick={() => onOpen(frame)} aria-label={`تكبير: ${frame.label}`}><img src={frame.src} alt={frame.alt} loading="lazy" /><span><Eye size={14} />{frame.label}</span></button>;
 }
 
+function CaseNarrative({ caseId }: { caseId: string }) {
+  const items = caseNarratives[caseId] ?? [];
+  return <div className="case-narrative" aria-label="شرح تفصيلي للحالة">{items.map((item) => <section key={item.title} className="case-narrative-item"><span>{item.label}</span><h5>{item.title}</h5><p>{item.body}</p></section>)}</div>;
+}
+
 function CaseArchive({ item, isOpen, onToggle, onOpenImage }: { item: CaseStudy; isOpen: boolean; onToggle: () => void; onOpenImage: (frame: Frame) => void }) {
   return <article className={`case-row accent-${item.accent} ${isOpen ? "is-open" : ""}`}>
     <div className="case-number">{item.id}</div>
     <button className="case-image-wrap" onClick={onToggle} aria-label={`فتح ملف ${item.title} البصري`}><img src={item.cover} alt={`موكاب ${item.title}`} loading="lazy" /><span className="image-index">{item.frames.length.toString().padStart(2, "0")} ASSETS</span></button>
     <div className="case-content"><div className="case-type">{item.type}</div><h3>{item.title}</h3><p>{item.excerpt}</p><div className="case-actions"><a href={`https://${item.url}`} target="_blank" rel="noreferrer" className="case-link">زيارة الموقع <ExternalLink size={15} /></a><button className="case-expand" onClick={onToggle} aria-expanded={isOpen}><Images size={15} />{isOpen ? "إخفاء الملف" : "عرض الملف البصري"}<ChevronDown size={15} /></button></div></div>
     <button className="case-arrow" onClick={onToggle} aria-label={`فتح ملف ${item.title}`}><ChevronLeft size={24} /></button>
-    {isOpen && <motion.div className="case-details" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.34, ease: [0.23, 1, 0.32, 1] }}><div className="case-detail-intro"><span className="eyebrow light"><span className="eyebrow-dot" /> CASE FILE / {item.id}</span><h4>{item.thesis}</h4><p>{item.detail}</p>{item.proofNote && <div className="proof-safety"><ShieldCheck size={16} />{item.proofNote}</div>}</div><div className="asset-gallery">{item.frames.map((frame, index) => <AssetTile key={`${item.id}-${frame.src}`} frame={frame} index={index} onOpen={onOpenImage} />)}</div></motion.div>}
+    {isOpen && <motion.div className="case-details" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.34, ease: [0.23, 1, 0.32, 1] }}><div className="case-detail-intro"><span className="eyebrow light"><span className="eyebrow-dot" /> CASE FILE / {item.id}</span><h4>{item.thesis}</h4><p>{item.detail}</p><CaseNarrative caseId={item.id} />{item.proofNote && <div className="proof-safety"><ShieldCheck size={16} />{item.proofNote}</div>}</div><div className="asset-gallery">{item.frames.map((frame, index) => <AssetTile key={`${item.id}-${frame.src}`} frame={frame} index={index} onOpen={onOpenImage} />)}</div></motion.div>}
   </article>;
 }
 
