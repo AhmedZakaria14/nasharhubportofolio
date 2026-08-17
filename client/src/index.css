@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Editorial Growth Atlas — ivory reading field, ink navy depth, signal blue routes, teal discovery, gold proof, and an evidence-first visual archive. */
+/* Saudi editorial refinement — Almarai Arabic typography, restrained materials, factual evidence, and direct professional language. */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -25,10 +25,15 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: #f4f1e9; color: #0b1020; font-family: "Noto Sans Arabic", sans-serif; overflow-x: hidden; }
+body { margin: 0; background: #f4f1e9; color: #0b1020; font-family: "Almarai", sans-serif; font-feature-settings: "kern" 1; overflow-x: hidden; }
 a { color: inherit; text-decoration: none; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
+
+/* Arabic-first hierarchy: the bespoke Arabic family carries all client-facing copy; Space Grotesk remains reserved for data and Latin labels. */
+.brand-caption, .hero-copy h1, .vision-copy h2, .section-intro h2, .seo-copy h2, .ads-intro h2, .contact-copy h2, .case-content h3, .case-detail-intro h4, .proof-note h3, .shelf-heading h3, .archive-toggle, .contact-email span { font-family: "Almarai", sans-serif; }
+.hero-copy h1, .vision-copy h2, .section-intro h2, .seo-copy h2, .ads-intro h2, .contact-copy h2 { letter-spacing: -.035em; }
+.brand-caption { border-right-color: rgba(11,16,32,.16); font-size: 9px; letter-spacing: 0; direction: rtl; }
 
 .container { width: 100%; max-width: 1280px; margin-inline: auto; padding-inline: 32px; }
 .site-shell { min-height: 100vh; background: #f4f1e9; }
