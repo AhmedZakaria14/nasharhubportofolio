@@ -1,0 +1,287 @@
+import { useEffect, useState, type ReactNode } from "react";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import {
+  ArrowDownLeft,
+  ArrowUpLeft,
+  ArrowUpRight,
+  ChevronDown,
+  ChevronLeft,
+  ExternalLink,
+  Eye,
+  Globe2,
+  Images,
+  Menu,
+  Search,
+  ShieldCheck,
+  Target,
+  X,
+} from "lucide-react";
+
+/** Editorial Growth Atlas — evidence-led Arabic portfolio: ink/ivory editorial reading, signal-blue routes, teal discovery, and gold proof. */
+
+type Frame = { src: string; alt: string; label: string; tone?: "wide" | "tall" | "document" };
+type CaseStudy = {
+  id: string;
+  title: string;
+  type: string;
+  url: string;
+  cover: string;
+  accent: string;
+  excerpt: string;
+  thesis: string;
+  detail: string;
+  proofNote?: string;
+  frames: Frame[];
+};
+
+const assets = {
+  logo: "/manus-storage/nasharhub-logo_f3df5e49.png",
+  mark: "/manus-storage/nasharhub-mark_4724d093.png",
+  hero: "/manus-storage/nasharhub-hero_97aff7bf.png",
+  orbit: "/manus-storage/nasharhub-growth-orbit_04c24c99.png",
+  arkan: {
+    home: "/manus-storage/actual_home_browser_ac8f3142.jpg",
+    services: "/manus-storage/actual_services_browser_de91c42c.jpg",
+    gallery: "/manus-storage/actual_gallery_browser_3f0444e6.jpg",
+    screens: "/manus-storage/actual_screens_board_a927b7a2.jpg",
+    desktop: "/manus-storage/mockup_desktop_dadce7b5.jpg",
+    mobile: "/manus-storage/mockup_mobile_50414aab.jpg",
+    features: "/manus-storage/feature_board_7a56f2e9.jpg",
+    tents: [
+      "/manus-storage/tent_interior_6957b7ce.jpg",
+      "/manus-storage/tent_luxury_d19e6abd.jpg",
+      "/manus-storage/tent_night_4cc9e17c.jpg",
+      "/manus-storage/tents_palms_b6ca955d.jpg",
+    ],
+  },
+  case2: {
+    home: "/manus-storage/home_browser_1a6a4844.jpg",
+    services: "/manus-storage/services_browser_7ff70a43.jpg",
+    gallery: "/manus-storage/gallery_browser_6c510119.jpg",
+    board: "/manus-storage/actual_screens_board_efce7ec5.jpg",
+    cards: ["/manus-storage/screen_card_1_aa644e8a.jpg", "/manus-storage/screen_card_2_76034237.jpg", "/manus-storage/screen_card_3_9adbd5c6.jpg"],
+    evidence: "/manus-storage/evidence_board_29e2074b.jpg",
+    documents: ["/manus-storage/evidence_registry_7ac17b09.jpg", "/manus-storage/evidence_vat_30f72221.jpg", "/manus-storage/evidence_invoice_425908f5.jpg"],
+  },
+  case3: {
+    home: "/manus-storage/home_browser_eef65170.jpg",
+    services: "/manus-storage/services_browser_810a8cc5.jpg",
+    gallery: "/manus-storage/services_gallery_browser_2e8d62dd.jpg",
+    board: "/manus-storage/actual_screens_board_a36512b2.jpg",
+    cards: ["/manus-storage/screen_card_1_467e6130.jpg", "/manus-storage/screen_card_2_e2936d06.jpg", "/manus-storage/screen_card_3_c5a9b7a9.jpg"],
+    evidence: "/manus-storage/evidence_board_9c510bbc.jpg",
+    documents: ["/manus-storage/evidence_registry_4b67e7e3.jpg", "/manus-storage/evidence_vat_2b4c9864.jpg", "/manus-storage/evidence_qiwa_6c42b426.jpg", "/manus-storage/evidence_address_a316635a.jpg"],
+  },
+  case4: {
+    home: "/manus-storage/home_browser_edafc000.jpg",
+    secondary: "/manus-storage/secondary_browser_56eed939.jpg",
+    board: "/manus-storage/actual_screens_board_c40f2239.jpg",
+    cards: ["/manus-storage/case4_screen_card_1_52795bb6.jpg", "/manus-storage/case4_screen_card_2_a066ae93.jpg"],
+    evidence: "/manus-storage/evidence_board_35cb367b.jpg",
+    documents: ["/manus-storage/evidence_cert_01_6523b6bb.jpg", "/manus-storage/evidence_cert_02_6d999776.jpg", "/manus-storage/evidence_cert_03_6e57d8bd.jpg", "/manus-storage/evidence_cert_04_6e04ccf5.jpg"],
+  },
+  case5: {
+    home: "/manus-storage/home_browser_baf4e3e3.jpg",
+    secondary: "/manus-storage/secondary_browser_2c966617.jpg",
+    board: "/manus-storage/actual_screens_board_1d643ef1.jpg",
+    cards: ["/manus-storage/case5_screen_card_1_f001fc27.jpg", "/manus-storage/case5_screen_card_2_151b6909.jpg"],
+  },
+  case6: {
+    home: "/manus-storage/home_browser_096d1e0a.jpg",
+    secondary: "/manus-storage/secondary_browser_3d32d94a.jpg",
+    board: "/manus-storage/actual_screens_board_46177004.jpg",
+    cards: ["/manus-storage/case6_screen_card_1_2058dda4.jpg", "/manus-storage/case6_screen_card_2_0a6f6006.jpg"],
+  },
+  seo: {
+    growth: "/manus-storage/search_console_growth_eb902522.png",
+    compare: "/manus-storage/search_console_compare_78d7bfdb.png",
+    sixMonths: "/manus-storage/search_console_six_months_5d1d278a.png",
+    structure: "/manus-storage/search_result_structure_e7651281.png",
+    boards: ["/manus-storage/search_visibility_board_01_fe0dbc10.jpg", "/manus-storage/search_visibility_board_02_75855f84.jpg", "/manus-storage/search_visibility_board_03_31efdcf2.jpg"],
+    panels: [
+      "/manus-storage/search_visibility_01_574c47b2.jpg", "/manus-storage/search_visibility_02_fba98683.jpg", "/manus-storage/search_visibility_03_23759a58.jpg", "/manus-storage/search_visibility_04_a5b67c01.jpg", "/manus-storage/search_visibility_05_2f71546e.jpg", "/manus-storage/search_visibility_06_56681cdb.jpg", "/manus-storage/search_visibility_07_3b3c9d6c.jpg", "/manus-storage/search_visibility_08_da1606b0.jpg", "/manus-storage/search_visibility_09_d742b8ac.jpg", "/manus-storage/search_visibility_10_6f124976.jpg", "/manus-storage/search_visibility_11_b25bc178.jpg", "/manus-storage/search_visibility_12_10733180.jpg", "/manus-storage/search_visibility_13_5364cdaa.jpg",
+    ],
+  },
+  ads: {
+    boards: ["/manus-storage/ads_performance_board_01_6f203760.jpg", "/manus-storage/ads_performance_board_02_0fe33a06.jpg", "/manus-storage/ads_performance_board_03_b3865d66.jpg"],
+    panels: [
+      "/manus-storage/ads_dashboard_01_89289cdb.jpg", "/manus-storage/ads_dashboard_02_8d1a0ae7.jpg", "/manus-storage/ads_dashboard_03_9620432d.jpg", "/manus-storage/ads_dashboard_04_f249146e.jpg", "/manus-storage/ads_dashboard_05_8cc24b1b.jpg", "/manus-storage/ads_dashboard_06_7095d8f2.jpg", "/manus-storage/ads_dashboard_07_2174b355.jpg", "/manus-storage/ads_dashboard_08_707a674f.jpg", "/manus-storage/ads_dashboard_09_3945e589.jpg", "/manus-storage/ads_dashboard_10_915433af.jpg",
+    ],
+  },
+};
+
+const cases: CaseStudy[] = [
+  {
+    id: "01", title: "أركان إليت", type: "فعاليات وخيام أوروبية", url: "arkaneliteevents.com", cover: assets.arkan.desktop, accent: "blue",
+    excerpt: "واجهة فاخرة تُترجم مشهد المناسبات إلى تجربة رقمية واضحة قابلة للاستكشاف.",
+    thesis: "حين تكون الصورة جزءاً من قرار العميل، يجب أن تفتح الواجهة مساحة للمشهد قبل التفاصيل.",
+    detail: "بدأ المسار بواجهة رئيسية قوية، ثم امتد إلى الخدمات والمعرض ولقطات موقع فعلية تمنح الزائر تصوراً ملموساً عن التجربة.",
+    frames: [
+      { src: assets.arkan.desktop, alt: "موكاب سطح المكتب لموقع أركان إليت", label: "موكاب الواجهة الرئيسية", tone: "wide" },
+      { src: assets.arkan.mobile, alt: "موكاب الجوال لموقع أركان إليت", label: "تجربة الجوال", tone: "tall" },
+      { src: assets.arkan.screens, alt: "لوحة لقطات موقع أركان إليت", label: "لقطات الموقع الفعلية", tone: "wide" },
+      { src: assets.arkan.home, alt: "الصفحة الرئيسية لموقع أركان إليت", label: "الواجهة المنشورة" },
+      { src: assets.arkan.services, alt: "صفحة خدمات أركان إليت", label: "طبقة الخدمات" },
+      { src: assets.arkan.gallery, alt: "معرض أركان إليت", label: "معرض الخيام" },
+      { src: assets.arkan.features, alt: "لوحة مميزات تجربة أركان إليت", label: "ملامح التجربة", tone: "wide" },
+      ...assets.arkan.tents.map((src, index) => ({ src, alt: `صورة مشروع أركان إليت ${index + 1}`, label: `مشهد الفعالية ${index + 1}` })),
+    ],
+  },
+  {
+    id: "02", title: "مؤسسة عالم الفن والهندسة", type: "زجاج سيكوريت بالمدينة المنورة", url: "moalemzujajmadina.com", cover: assets.case2.home, accent: "teal",
+    excerpt: "بناء حضور موثوق لخدمة محلية عبر موكابات فعلية، خدمات مرتبة، وإثباتات تجارية منضبطة.",
+    thesis: "الخدمة المحلية تحتاج إلى إجابة سريعة: ماذا تقدم المؤسسة، ولماذا يمكن الوثوق بها؟",
+    detail: "يوثق المعرض واجهة الموقع، بنية الخدمات، معرض الأعمال، وبطاقات الإثبات المموهة المخصصة للعرض العام.",
+    proofNote: "تعرض المستندات بصيغة مموهة لحماية المعلومات غير الضرورية للعرض العام.",
+    frames: [
+      { src: assets.case2.home, alt: "الصفحة الرئيسية لمؤسسة عالم الفن والهندسة", label: "الواجهة المنشورة", tone: "wide" },
+      { src: assets.case2.board, alt: "لوحة لقطات موقع عالم الفن والهندسة", label: "لقطات الموقع الفعلية", tone: "wide" },
+      { src: assets.case2.services, alt: "خدمات مؤسسة عالم الفن والهندسة", label: "طبقة الخدمات" },
+      { src: assets.case2.gallery, alt: "معرض أعمال مؤسسة عالم الفن والهندسة", label: "معرض الأعمال" },
+      ...assets.case2.cards.map((src, index) => ({ src, alt: `بطاقة واجهة عالم الفن والهندسة ${index + 1}`, label: `مقطع واجهة ${index + 1}` })),
+      { src: assets.case2.evidence, alt: "لوحة أدلة مؤسسة عالم الفن والهندسة", label: "لوحة أدلة مموهة", tone: "wide" },
+      ...assets.case2.documents.map((src, index) => ({ src, alt: `دليل مموه لمؤسسة عالم الفن والهندسة ${index + 1}`, label: `إثبات منشور ${index + 1}`, tone: "document" as const })),
+    ],
+  },
+  {
+    id: "03", title: "خدمات الياسمين", type: "حلول وخدمات متكاملة", url: "alyasmineservices.com", cover: assets.case3.home, accent: "gold",
+    excerpt: "تنظيم رحلة المستخدم من التعريف بالخدمة إلى نقطة التواصل دون ازدحام أو تكرار.",
+    thesis: "في الخدمات المتنوعة، التنظيم البصري هو ما يجعل العرض مفهوماً وقابلاً للتصرف.",
+    detail: "يعرض الملف لقطات مستقرة للصفحة الرئيسية والخدمات وطبقة إثبات مستقلة، مع موكاب نتيجة خاص بخدمات الياسمين.",
+    proofNote: "تحمل بطاقات الإثبات تمويهاً مقصوداً لحماية البيانات المرجعية والأرقام الحساسة.",
+    frames: [
+      { src: assets.case3.home, alt: "الصفحة الرئيسية لخدمات الياسمين", label: "الواجهة المنشورة", tone: "wide" },
+      { src: assets.case3.board, alt: "لوحة لقطات خدمات الياسمين", label: "لقطات الموقع الفعلية", tone: "wide" },
+      { src: assets.case3.services, alt: "صفحة خدمات الياسمين", label: "تصنيف الخدمات" },
+      { src: assets.case3.gallery, alt: "معرض خدمات الياسمين", label: "موكاب الخدمات والنتيجة" },
+      ...assets.case3.cards.map((src, index) => ({ src, alt: `بطاقة خدمات الياسمين ${index + 1}`, label: `مقطع واجهة ${index + 1}` })),
+      { src: assets.case3.evidence, alt: "لوحة أدلة خدمات الياسمين", label: "لوحة أدلة مموهة", tone: "wide" },
+      ...assets.case3.documents.map((src, index) => ({ src, alt: `دليل مموه لخدمات الياسمين ${index + 1}`, label: `إثبات منشور ${index + 1}`, tone: "document" as const })),
+    ],
+  },
+  {
+    id: "04", title: "الصفا للمعادن", type: "تشكيل معادن — مصر", url: "safa-steels.com", cover: assets.case4.home, accent: "rust",
+    excerpt: "لغة صناعية موثوقة تُظهر الشهادات والاعتمادات كجزء من قرار الشراء.",
+    thesis: "في المشاريع الصناعية، الوضوح وطبقة الإثبات يختصران الطريق قبل أي تواصل تجاري.",
+    detail: "يوثق المسار الموقع الفعلي، فئات القدرات الصناعية، وصفحة الشهادات والاعتمادات المنشورة بصيغة آمنة للعرض.",
+    proofNote: "تم إخفاء أرقام المراجع والتوقيعات وبيانات الاتصال من صور الشهادات المعروضة.",
+    frames: [
+      { src: assets.case4.home, alt: "الواجهة الرئيسية للصفا للمعادن", label: "الواجهة المنشورة", tone: "wide" },
+      { src: assets.case4.board, alt: "لوحة لقطات الصفا للمعادن", label: "الموقع كما يراه الزائر", tone: "wide" },
+      { src: assets.case4.secondary, alt: "صفحة من موقع الصفا للمعادن", label: "واجهة النتيجة" },
+      ...assets.case4.cards.map((src, index) => ({ src, alt: `مقطع موقع الصفا للمعادن ${index + 1}`, label: `قدرة صناعية ${index + 1}` })),
+      { src: assets.case4.evidence, alt: "لوحة شهادات واعتمادات الصفا للمعادن", label: "لوحة أدلة مموهة", tone: "wide" },
+      ...assets.case4.documents.map((src, index) => ({ src, alt: `شهادة مموهة للصفا للمعادن ${index + 1}`, label: `شهادة منشورة ${index + 1}`, tone: "document" as const })),
+    ],
+  },
+  {
+    id: "05", title: "مندوب زين 5G", type: "موزع معتمد", url: "mandoubzain5g.com", cover: assets.case5.home, accent: "violet",
+    excerpt: "تجربة مباشرة تبرز صفة الموزع المعتمد وتدفع المستخدم إلى الإجراء المناسب.",
+    thesis: "صفة الاعتماد ليست تفصيلاً؛ إنها طبقة الثقة التي تسبق قرار اختيار الباقة.",
+    detail: "تظهر اللقطات المنشورة رحلة من عرض الاعتماد والخدمة إلى الباقات والتفعيل، مع فصل واضح لكل نقطة قرار.",
+    frames: [
+      { src: assets.case5.home, alt: "الواجهة الرئيسية لمندوب زين 5G", label: "الواجهة المنشورة", tone: "wide" },
+      { src: assets.case5.board, alt: "لوحة لقطات مندوب زين 5G", label: "لقطات الموقع الفعلية", tone: "wide" },
+      { src: assets.case5.secondary, alt: "باقات مندوب زين 5G", label: "مسار الباقات" },
+      ...assets.case5.cards.map((src, index) => ({ src, alt: `مقطع موقع مندوب زين ${index + 1}`, label: `نقطة قرار ${index + 1}` })),
+    ],
+  },
+  {
+    id: "06", title: "أفران نابولي", type: "أفران ومشبات — السعودية", url: "napoliovensksa.com", cover: assets.case6.home, accent: "orange",
+    excerpt: "هوية دافئة ومحتوى بصري يُقرّب المنتج من الخيال قبل طلب الاستشارة.",
+    thesis: "المنتج الذي يُتخيل جيداً يصبح أسهل في المقارنة والطلب.",
+    detail: "تجمع اللقطات بين الصفحة الرئيسية وشبكة المنتجات وعناصر دعوة واضحة للاستشارة، دون خلط مع مشاريع الخدمات الأخرى.",
+    frames: [
+      { src: assets.case6.home, alt: "الواجهة الرئيسية لأفران نابولي", label: "الواجهة المنشورة", tone: "wide" },
+      { src: assets.case6.board, alt: "لوحة لقطات أفران نابولي", label: "لقطات الموقع الفعلية", tone: "wide" },
+      { src: assets.case6.secondary, alt: "صفحة منتجات أفران نابولي", label: "شبكة المنتجات" },
+      ...assets.case6.cards.map((src, index) => ({ src, alt: `مقطع موقع أفران نابولي ${index + 1}`, label: `نقطة عرض ${index + 1}` })),
+    ],
+  },
+];
+
+const navItems = [
+  { label: "الرؤية", href: "#vision" },
+  { label: "المواقع", href: "#websites" },
+  { label: "السيو", href: "#seo" },
+  { label: "إعلانات Google", href: "#ads" },
+];
+
+function Reveal({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
+  return <motion.div className={className} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.14 }} transition={{ duration: 0.65, delay, ease: [0.23, 1, 0.32, 1] }}>{children}</motion.div>;
+}
+
+function Metric({ value, label, note, color = "blue" }: { value: string; label: string; note: string; color?: string }) {
+  return <div className={`metric metric-${color}`}><div className="metric-value">{value}</div><div className="metric-label">{label}</div><div className="metric-note">{note}</div></div>;
+}
+
+function AssetTile({ frame, onOpen, index = 0 }: { frame: Frame; onOpen: (frame: Frame) => void; index?: number }) {
+  const layout = frame.tone === "wide" || index === 0 ? "is-wide" : frame.tone === "tall" || frame.tone === "document" ? "is-tall" : "";
+  return <button className={`asset-tile ${layout}`} onClick={() => onOpen(frame)} aria-label={`تكبير: ${frame.label}`}><img src={frame.src} alt={frame.alt} loading="lazy" /><span><Eye size={14} />{frame.label}</span></button>;
+}
+
+function CaseArchive({ item, isOpen, onToggle, onOpenImage }: { item: CaseStudy; isOpen: boolean; onToggle: () => void; onOpenImage: (frame: Frame) => void }) {
+  return <article className={`case-row accent-${item.accent} ${isOpen ? "is-open" : ""}`}>
+    <div className="case-number">{item.id}</div>
+    <button className="case-image-wrap" onClick={onToggle} aria-label={`فتح ملف ${item.title} البصري`}><img src={item.cover} alt={`موكاب ${item.title}`} loading="lazy" /><span className="image-index">{item.frames.length.toString().padStart(2, "0")} ASSETS</span></button>
+    <div className="case-content"><div className="case-type">{item.type}</div><h3>{item.title}</h3><p>{item.excerpt}</p><div className="case-actions"><a href={`https://${item.url}`} target="_blank" rel="noreferrer" className="case-link">زيارة الموقع <ExternalLink size={15} /></a><button className="case-expand" onClick={onToggle} aria-expanded={isOpen}><Images size={15} />{isOpen ? "إخفاء الملف" : "عرض الملف البصري"}<ChevronDown size={15} /></button></div></div>
+    <button className="case-arrow" onClick={onToggle} aria-label={`فتح ملف ${item.title}`}><ChevronLeft size={24} /></button>
+    {isOpen && <motion.div className="case-details" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.34, ease: [0.23, 1, 0.32, 1] }}><div className="case-detail-intro"><span className="eyebrow light"><span className="eyebrow-dot" /> CASE FILE / {item.id}</span><h4>{item.thesis}</h4><p>{item.detail}</p>{item.proofNote && <div className="proof-safety"><ShieldCheck size={16} />{item.proofNote}</div>}</div><div className="asset-gallery">{item.frames.map((frame, index) => <AssetTile key={`${item.id}-${frame.src}`} frame={frame} index={index} onOpen={onOpenImage} />)}</div></motion.div>}
+  </article>;
+}
+
+export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [active, setActive] = useState("الرؤية");
+  const [scrolled, setScrolled] = useState(false);
+  const [openCase, setOpenCase] = useState<string | null>(null);
+  const [showSeoArchive, setShowSeoArchive] = useState(false);
+  const [showAdsArchive, setShowAdsArchive] = useState(false);
+  const [lightbox, setLightbox] = useState<Frame | null>(null);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 28, restDelta: 0.001 });
+  const heroShift = useTransform(scrollYProgress, [0, 0.22], [0, -30]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 36);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = ["vision", "websites", "seo", "ads"];
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.find((entry) => entry.isIntersecting);
+      if (visible) { const match = navItems.find((item) => item.href === `#${visible.target.id}`); if (match) setActive(match.label); }
+    }, { rootMargin: "-35% 0px -55% 0px" });
+    sections.forEach((id) => { const element = document.getElementById(id); if (element) observer.observe(element); });
+    return () => observer.disconnect();
+  }, []);
+
+  const openImage = (frame: Frame) => setLightbox(frame);
+  const seoBoardFrames: Frame[] = assets.seo.boards.map((src, index) => ({ src, alt: `لوحة سيو موثقة ${index + 1}`, label: `لوحة الظهور ${index + 1}`, tone: "wide" }));
+  const seoPanelFrames: Frame[] = assets.seo.panels.map((src, index) => ({ src, alt: `دليل سيو تفصيلي ${index + 1}`, label: `لوحة المصدر ${String(index + 1).padStart(2, "0")}` }));
+  const adsPanelFrames: Frame[] = assets.ads.panels.map((src, index) => ({ src, alt: `لوحة Google Ads تفصيلية ${index + 1}`, label: `لوحة المصدر ${String(index + 1).padStart(2, "0")}` }));
+
+  return <div className="site-shell" dir="rtl">
+    <motion.div className="scroll-progress" style={{ scaleX: progress }} />
+    <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}><a href="#top" className="brand-lockup" aria-label="NasharHub home"><img src={assets.mark} alt="" className="brand-symbol" /><img src={assets.logo} alt="NasharHub" className="brand-wordmark" /><span className="brand-caption">DIGITAL GROWTH STUDIO</span></a><nav className="desktop-nav" aria-label="التنقل الرئيسي">{navItems.map((item) => <a key={item.href} className={active === item.label ? "active" : ""} href={item.href}>{item.label}</a>)}</nav><a className="header-cta" href="#contact">ابدأ حواراً <ArrowUpLeft size={16} /></a><button className="menu-toggle" onClick={() => setMenuOpen((open) => !open)} aria-label="فتح القائمة">{menuOpen ? <X size={22} /> : <Menu size={22} />}</button></header>
+    {menuOpen && <motion.div className="mobile-menu" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>{navItems.map((item) => <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}<a href="#contact" onClick={() => setMenuOpen(false)}>ابدأ حواراً <ArrowUpLeft size={16} /></a></motion.div>}
+
+    <main id="top">
+      <section className="hero-section"><div className="hero-backdrop" style={{ backgroundImage: `url(${assets.hero})` }} /><div className="hero-grain" /><div className="container hero-content"><motion.div className="hero-copy" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}><div className="eyebrow light"><span className="eyebrow-dot" /> NASHARHUB / PORTFOLIO 2026</div><h1>نصنع حضوراً<br /><em>يُقرأ، يُرى،</em><br />ويتحرك إلى الأمام.</h1><p className="hero-lede">من تصميم المواقع إلى الظهور في البحث وإعلانات Google، نجمع الحرفة الرقمية مع قراءة واضحة للنتيجة.</p><div className="hero-actions"><a className="button button-primary" href="#websites">استكشف الأعمال <ArrowDownLeft size={18} /></a><a className="text-link light-link" href="#vision">كيف نعمل؟ <ArrowUpLeft size={16} /></a></div></motion.div><motion.div className="hero-aside" style={{ y: heroShift }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.15 }}><div className="hero-mark-wrap"><img src={assets.mark} alt="رمز NasharHub" /></div><span className="hero-aside-number">06 + 02</span><span className="hero-aside-label">مسارات نمو موثقة<br />داخل قصة واحدة</span></motion.div></div><div className="hero-footer container"><span>SCROLL TO READ</span><span className="route-line" /><span>01 / 04</span></div></section>
+
+      <section id="vision" className="vision-section section-light"><div className="container split-layout"><Reveal className="section-index"><span>01</span><span className="index-line" /><span>الرؤية</span></Reveal><Reveal delay={0.08} className="vision-copy"><div className="eyebrow"><span className="eyebrow-dot blue-dot" /> WHERE CRAFT MEETS GROWTH</div><h2>ليست مجموعة صور.<br /><span>إنها طريقة تفكير.</span></h2><p className="large-copy">كل مشروع في هذا الملف بدأ بسؤال تجاري واضح: ما الذي يجب أن يفهمه الزائر؟ ما الذي يجب أن يثق به؟ وما الخطوة التالية التي نريد أن تصبح أسهل؟</p><p>لذلك لا نعرض واجهة فقط؛ نعرض القرار الذي جعلها تعمل. نرتب القصة، نبني الأدلة، ثم نترك للنتيجة مساحة لتتكلم.</p><a className="text-link" href="#websites">شاهد الحالات بالتفصيل <ArrowUpLeft size={16} /></a></Reveal><Reveal delay={0.16} className="vision-object"><div className="orbit-card"><img src={assets.orbit} alt="مسار نمو رقمي" /><div className="orbit-label"><span>01</span><strong>فهم</strong><small>السياق قبل الشكل</small></div></div></Reveal></div><div className="container metric-strip"><Metric value="06" label="دراسات مواقع" note="من قطاعات مختلفة" color="blue" /><Metric value="03" label="لوحات SEO" note="مع أرشيف أدلة موسّع" color="teal" /><Metric value="13" label="لوحات بحث" note="من ملف المصدر" color="gold" /><Metric value="10" label="لوحات Google Ads" note="مضمّنة في الأرشيف" color="ink" /></div></section>
+
+      <section id="websites" className="websites-section section-ink"><div className="container"><div className="section-heading-row"><Reveal className="section-index light-index"><span>02</span><span className="index-line" /><span>تصميم المواقع</span></Reveal><Reveal className="heading-side"><span className="eyebrow light"><span className="eyebrow-dot" /> SELECTED WORKS</span><p>ستة مشاريع، ستة سياقات، وقاسم واحد: تحويل التعقيد إلى تجربة واضحة.</p></Reveal></div><Reveal className="section-intro light-intro"><h2>واجهة تُرى.<br /><em>منظومة تُفهم.</em></h2><p>هذه ليست صوراً مختارة فقط. افتح ملف كل مشروع لرؤية الموكابات، لقطات الموقع، الأدلة المنشورة، والمواد التي تشكل القصة الكاملة.</p></Reveal><div className="archive-status"><Images size={16} /><span>ملفات بصرية موسعة — اضغط على أي مشروع لفتح كامل الأصول المعتمدة له.</span></div><div className="cases-list">{cases.map((item) => <Reveal key={item.id} className="case-reveal"><CaseArchive item={item} isOpen={openCase === item.id} onToggle={() => setOpenCase(openCase === item.id ? null : item.id)} onOpenImage={openImage} /></Reveal>)}</div></div></section>
+
+      <section id="seo" className="seo-section section-cream"><div className="container"><div className="section-heading-row"><Reveal className="section-index"><span>03</span><span className="index-line" /><span>SEO / الظهور</span></Reveal><Reveal className="heading-side"><span className="eyebrow"><span className="eyebrow-dot teal-dot" /> ORGANIC VISIBILITY</span><p>لا نطارد ترتيباً منعزلاً؛ نبني مساراً يجعل الخدمة قابلة للاكتشاف والفهم.</p></Reveal></div><div className="seo-grid"><Reveal className="seo-copy"><h2>من الحضور<br /><span>إلى الاكتشاف.</span></h2><p className="large-copy">السيو عند NasharHub ليس قائمة كلمات مفتاحية. هو إعادة ترتيب للعلاقة بين نية الباحث، الصفحة، والدليل الذي يطمئنه.</p><div className="process-list"><div><span>01</span><p><strong>فهم النية</strong><br />ما الذي يبحث عنه العميل فعلاً؟</p></div><div><span>02</span><p><strong>بناء الصفحة</strong><br />محتوى واضح، قابل للقراءة والفهرسة.</p></div><div><span>03</span><p><strong>قراءة الأثر</strong><br />نقيس الظهور والنقرات والتحسن عبر الزمن.</p></div></div></Reveal><Reveal delay={0.1} className="seo-evidence"><div className="evidence-label"><Search size={15} /> SEARCH CONSOLE / EVIDENCE</div><button className="evidence-image" onClick={() => openImage({ src: assets.seo.growth, alt: "لوحة نمو Search Console", label: "نمو الظهور" })}><img src={assets.seo.growth} alt="لوحة نمو الظهور في Search Console" /></button><div className="evidence-caption"><span>قراءة الاتجاه</span><p>ارتفاع الظهور لا يعني شيئاً وحده؛ القيمة تظهر عندما يتحول إلى نقرات وزيارات ذات نية.</p></div></Reveal></div><div className="seo-proof-grid"><Reveal><button className="proof-image" onClick={() => openImage({ src: assets.seo.compare, alt: "مقارنة أداء Search Console", label: "مقارنة الأداء" })}><img src={assets.seo.compare} alt="مقارنة أداء Search Console" /></button></Reveal><Reveal delay={0.08}><button className="proof-image" onClick={() => openImage({ src: assets.seo.sixMonths, alt: "بيانات ستة أشهر في Search Console", label: "قراءة ستة أشهر" })}><img src={assets.seo.sixMonths} alt="بيانات ستة أشهر في Search Console" /></button></Reveal><Reveal delay={0.16} className="proof-note"><span className="eyebrow"><span className="eyebrow-dot teal-dot" /> WHAT WE READ</span><h3>نتيجة البحث هي أول صفحة في الموقع.</h3><p>العنوان، الوصف، الرابط، وترتيب الرسالة؛ كلها نقاط صغيرة تصنع قرار النقر.</p><button className="text-link text-button" onClick={() => openImage({ src: assets.seo.structure, alt: "بنية نتيجة البحث", label: "بنية نتيجة البحث" })}>عرض بنية النتيجة <ArrowUpLeft size={16} /></button></Reveal></div><div className="evidence-shelf seo-shelf"><div className="shelf-heading"><div><span className="eyebrow"><span className="eyebrow-dot teal-dot" /> EVIDENCE BOARDS</span><h3>لوحات الظهور من ملف البورتفوليو</h3></div><span>03 لوحات مركّبة</span></div><div className="shelf-tiles">{seoBoardFrames.map((frame, index) => <AssetTile key={frame.src} frame={frame} index={index} onOpen={openImage} />)}</div><button className="archive-toggle" onClick={() => setShowSeoArchive((value) => !value)} aria-expanded={showSeoArchive}><Images size={16} />{showSeoArchive ? "إخفاء أرشيف لوحات البحث" : "عرض جميع لوحات البحث التفصيلية"}<span>13</span><ChevronDown size={16} /></button>{showSeoArchive && <motion.div className="source-archive" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{seoPanelFrames.map((frame, index) => <AssetTile key={frame.src} frame={frame} index={index + 1} onOpen={openImage} />)}</motion.div>}</div></div></section>
+
+      <section id="ads" className="ads-section section-ink"><div className="container"><div className="section-heading-row"><Reveal className="section-index light-index"><span>04</span><span className="index-line" /><span>إعلانات Google</span></Reveal><Reveal className="heading-side"><span className="eyebrow light"><span className="eyebrow-dot" /> PAID PERFORMANCE</span><p>حين تكون النية حاضرة الآن، نضع الرسالة أمامها بوضوح ونقرأ ما حدث بعدها.</p></Reveal></div><div className="ads-intro"><Reveal><h2>السرعة لا تلغي<br /><em>المنهج.</em></h2></Reveal><Reveal delay={0.08}><p className="light-copy">إعلانات Google هي مختبر سريع للعرض، الرسالة، والطلب. نستخدم البيانات لتقليل التخمين، لا لتجميل الأرقام.</p><div className="ad-metrics"><Metric value="7,820" label="نقرات مسجلة" note="وفق لوحة المصدر" color="blue" /><Metric value="157,112" label="مرات ظهور" note="وفق لوحة المصدر" color="gold" /><Metric value="9.37" label="متوسط CPC" note="كما ظهر في المصدر" color="teal" /></div></Reveal></div><div className="ads-gallery"><Reveal className="ads-main-image"><button onClick={() => openImage({ src: assets.ads.boards[0], alt: "لوحة أداء Google Ads الأولى", label: "لوحة الأداء 01" })}><img src={assets.ads.boards[0]} alt="لوحة أداء Google Ads" /></button><span>01 / PERFORMANCE SNAPSHOT</span></Reveal><div className="ads-side-images"><Reveal delay={0.08}><button onClick={() => openImage({ src: assets.ads.boards[1], alt: "لوحة أداء Google Ads الثانية", label: "لوحة الأداء 02" })}><img src={assets.ads.boards[1]} alt="مؤشرات حملة Google Ads" /></button></Reveal><Reveal delay={0.16}><button onClick={() => openImage({ src: assets.ads.boards[2], alt: "لوحة أداء Google Ads الثالثة", label: "لوحة الأداء 03" })}><img src={assets.ads.boards[2]} alt="تحليل إعلانات Google" /></button></Reveal></div></div><div className="evidence-shelf ads-shelf"><div className="shelf-heading"><div><span className="eyebrow light"><span className="eyebrow-dot" /> SOURCE PANELS</span><h3>سجل بصري تفصيلي للحملات</h3></div><span>10 لوحات مصدر</span></div><p className="shelf-description">هذه الأصول مدمجة لحفظ السياق البصري للمؤشرات، دون استنتاج تحويلات أو إيرادات أو ROAS غير مثبتة في المصدر.</p><button className="archive-toggle archive-toggle-light" onClick={() => setShowAdsArchive((value) => !value)} aria-expanded={showAdsArchive}><Images size={16} />{showAdsArchive ? "إخفاء سجل لوحات الإعلانات" : "عرض جميع لوحات الإعلانات التفصيلية"}<span>10</span><ChevronDown size={16} /></button>{showAdsArchive && <motion.div className="source-archive source-archive-dark" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{adsPanelFrames.map((frame, index) => <AssetTile key={frame.src} frame={frame} index={index + 1} onOpen={openImage} />)}</motion.div>}</div><Reveal className="ads-note"><Target size={20} /><p><strong>ملاحظة منهجية:</strong> نعرض المؤشرات كما ظهرت في المصدر، ولا ننسب لها تحويلات أو إيرادات أو ROAS ما لم تكن مثبتة في البيانات.</p></Reveal></div></section>
+
+      <section id="contact" className="contact-section section-light"><div className="container contact-layout"><Reveal className="section-index"><span>05</span><span className="index-line" /><span>الخطوة التالية</span></Reveal><Reveal className="contact-copy"><div className="eyebrow"><span className="eyebrow-dot blue-dot" /> LET'S MAKE THE NEXT SIGNAL CLEAR</div><h2>لديك مشروع<br /><span>يستحق أن يُرى؟</span></h2><p>أرسل لنا السياق، وسنحوّله إلى مسار رقمي يمكن فهمه وقياسه.</p><a className="button button-dark" href="mailto:hello@nasharhub.com">تواصل مع NasharHub <ArrowUpLeft size={18} /></a></Reveal><Reveal className="contact-mark" delay={0.12}><img src={assets.mark} alt="رمز NasharHub" /><span>WEBSITE / SEO / ADS</span></Reveal></div></section>
+    </main>
+    <footer className="site-footer"><div className="container footer-inner"><div><span className="footer-brand-lockup"><img src={assets.mark} alt="" /><img src={assets.logo} alt="NasharHub" /></span><span>Digital presence, made legible.</span></div><div className="footer-links"><a href="mailto:hello@nasharhub.com">hello@nasharhub.com</a><a href="#top">العودة إلى الأعلى <ArrowUpRight size={15} /></a></div><span className="footer-copy">© 2026 NASHARHUB</span></div></footer>
+    {lightbox && <motion.div className="lightbox" role="dialog" aria-modal="true" aria-label={lightbox.label} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLightbox(null)}><button className="lightbox-close" onClick={() => setLightbox(null)} aria-label="إغلاق العرض"><X size={22} /></button><motion.figure initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.24 }} onClick={(event) => event.stopPropagation()}><img src={lightbox.src} alt={lightbox.alt} /><figcaption>{lightbox.label}</figcaption></motion.figure></motion.div>}
+  </div>;
+}
