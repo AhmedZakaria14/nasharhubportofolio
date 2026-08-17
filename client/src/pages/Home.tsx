@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode, type WheelEvent as ReactWheelEvent } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowDownLeft,
@@ -11,15 +11,20 @@ import {
   Globe2,
   Images,
   Menu,
+  Move,
+  RotateCcw,
   Search,
   ShieldCheck,
   Target,
   X,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
 
 /** Editorial Growth Atlas — evidence-led Arabic portfolio: ink/ivory editorial reading, signal-blue routes, teal discovery, and gold proof. */
 
 type Frame = { src: string; alt: string; label: string; tone?: "wide" | "tall" | "document" };
+type Point = { x: number; y: number };
 type CaseStudy = {
   id: string;
   title: string;
@@ -207,6 +212,9 @@ const navItems = [
   { label: "إعلانات Google", href: "#ads" },
 ];
 
+const clampZoom = (value: number) => Math.min(4, Math.max(1, value));
+const panLimitFor = (zoom: number) => Math.max(0, (zoom - 1) * 260);
+
 function Reveal({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
   return <motion.div className={className} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.14 }} transition={{ duration: 0.65, delay, ease: [0.23, 1, 0.32, 1] }}>{children}</motion.div>;
 }
@@ -238,6 +246,12 @@ export default function Home() {
   const [showSeoArchive, setShowSeoArchive] = useState(false);
   const [showAdsArchive, setShowAdsArchive] = useState(false);
   const [lightbox, setLightbox] = useState<Frame | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState<Point>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const pointersRef = useRef(new Map<number, Point>());
+  const dragRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(null);
+  const pinchRef = useRef<{ distance: number; zoom: number } | null>(null);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 28, restDelta: 0.001 });
   const heroShift = useTransform(scrollYProgress, [0, 0.22], [0, -30]);
@@ -258,7 +272,61 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
-  const openImage = (frame: Frame) => setLightbox(frame);
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setLightbox(null); return; }
+      if (event.key === "+" || event.key === "=") setZoom((current) => clampZoom(current + 0.25));
+      if (event.key === "-") setZoom((current) => clampZoom(current - 0.25));
+      if (event.key.toLowerCase() === "r") { setZoom(1); setPan({ x: 0, y: 0 }); }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [lightbox]);
+
+  const resetView = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
+  const closeLightbox = () => { setLightbox(null); resetView(); };
+  const setZoomLevel = (value: number) => {
+    const nextZoom = clampZoom(value);
+    const limit = panLimitFor(nextZoom);
+    setZoom(nextZoom);
+    setPan((current) => ({ x: Math.max(-limit, Math.min(limit, current.x)), y: Math.max(-limit, Math.min(limit, current.y)) }));
+  };
+  const openImage = (frame: Frame) => { resetView(); setLightbox(frame); };
+  const handleWheel = (event: ReactWheelEvent<HTMLDivElement>) => { event.preventDefault(); setZoomLevel(zoom + (event.deltaY < 0 ? 0.22 : -0.22)); };
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    pointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    const points = Array.from(pointersRef.current.values());
+    if (points.length === 2) {
+      pinchRef.current = { distance: Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y), zoom };
+      dragRef.current = null;
+      setIsDragging(false);
+    } else if (zoom > 1) {
+      dragRef.current = { startX: event.clientX, startY: event.clientY, panX: pan.x, panY: pan.y };
+      setIsDragging(true);
+    }
+  };
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!pointersRef.current.has(event.pointerId)) return;
+    pointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    const points = Array.from(pointersRef.current.values());
+    if (points.length === 2 && pinchRef.current) {
+      const distance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+      setZoomLevel(pinchRef.current.zoom * (distance / pinchRef.current.distance));
+      return;
+    }
+    if (dragRef.current && zoom > 1) {
+      const limit = panLimitFor(zoom);
+      setPan({ x: Math.max(-limit, Math.min(limit, dragRef.current.panX + event.clientX - dragRef.current.startX)), y: Math.max(-limit, Math.min(limit, dragRef.current.panY + event.clientY - dragRef.current.startY)) });
+    }
+  };
+  const handlePointerEnd = (event: ReactPointerEvent<HTMLDivElement>) => {
+    pointersRef.current.delete(event.pointerId);
+    if (pointersRef.current.size < 2) pinchRef.current = null;
+    if (pointersRef.current.size === 0) { dragRef.current = null; setIsDragging(false); }
+  };
+  const toggleZoom = () => { if (zoom === 1) setZoomLevel(2); else resetView(); };
   const seoBoardFrames: Frame[] = assets.seo.boards.map((src, index) => ({ src, alt: `لوحة سيو موثقة ${index + 1}`, label: `لوحة الظهور ${index + 1}`, tone: "wide" }));
   const seoPanelFrames: Frame[] = assets.seo.panels.map((src, index) => ({ src, alt: `دليل سيو تفصيلي ${index + 1}`, label: `لوحة المصدر ${String(index + 1).padStart(2, "0")}` }));
   const adsPanelFrames: Frame[] = assets.ads.panels.map((src, index) => ({ src, alt: `لوحة Google Ads تفصيلية ${index + 1}`, label: `لوحة المصدر ${String(index + 1).padStart(2, "0")}` }));
@@ -282,6 +350,6 @@ export default function Home() {
       <section id="contact" className="contact-section section-light"><div className="container contact-layout"><Reveal className="section-index"><span>05</span><span className="index-line" /><span>الخطوة التالية</span></Reveal><Reveal className="contact-copy"><div className="eyebrow"><span className="eyebrow-dot blue-dot" /> LET'S MAKE THE NEXT SIGNAL CLEAR</div><h2>لديك مشروع<br /><span>يستحق أن يُرى؟</span></h2><p>أرسل لنا السياق، وسنحوّله إلى مسار رقمي يمكن فهمه وقياسه.</p><a className="contact-email" href="mailto:infp@nasharhub.com"><span>للتواصل المباشر</span>infp@nasharhub.com</a><a className="button button-dark" href="mailto:infp@nasharhub.com">تواصل مع NasharHub <ArrowUpLeft size={18} /></a></Reveal><Reveal className="contact-mark" delay={0.12}><img src={assets.mark} alt="رمز NasharHub" /><span>WEBSITE / SEO / ADS</span></Reveal></div></section>
     </main>
     <footer className="site-footer"><div className="container footer-inner"><div><span className="footer-brand-lockup"><img src={assets.mark} alt="" /><img src={assets.logo} alt="NasharHub" /></span><span>Digital presence, made legible.</span></div><div className="footer-links"><a href="mailto:infp@nasharhub.com">infp@nasharhub.com</a><a href="#top">العودة إلى الأعلى <ArrowUpRight size={15} /></a></div><span className="footer-copy">© 2026 NASHARHUB</span></div></footer>
-    {lightbox && <motion.div className="lightbox" role="dialog" aria-modal="true" aria-label={lightbox.label} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLightbox(null)}><button className="lightbox-close" onClick={() => setLightbox(null)} aria-label="إغلاق العرض"><X size={22} /></button><motion.figure initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.24 }} onClick={(event) => event.stopPropagation()}><img src={lightbox.src} alt={lightbox.alt} /><figcaption>{lightbox.label}</figcaption></motion.figure></motion.div>}
+    {lightbox && <motion.div className="lightbox" role="dialog" aria-modal="true" aria-label={lightbox.label} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeLightbox}><div className="lightbox-toolbar" onClick={(event) => event.stopPropagation()}><div className="lightbox-hint"><Move size={14} />حرّك الصورة بعد التكبير</div><div className="lightbox-controls"><button type="button" onClick={() => setZoomLevel(zoom - 0.25)} disabled={zoom <= 1} aria-label="تصغير الصورة"><ZoomOut size={18} /></button><output aria-live="polite">{Math.round(zoom * 100)}%</output><button type="button" onClick={() => setZoomLevel(zoom + 0.25)} disabled={zoom >= 4} aria-label="تكبير الصورة"><ZoomIn size={18} /></button><button type="button" onClick={resetView} disabled={zoom === 1 && pan.x === 0 && pan.y === 0} aria-label="إعادة ضبط الصورة"><RotateCcw size={17} /></button></div><button type="button" className="lightbox-close" onClick={closeLightbox} aria-label="إغلاق العرض"><X size={21} /></button></div><motion.figure initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.24 }} onClick={(event) => event.stopPropagation()}><div className={`zoom-stage ${zoom > 1 ? "is-zoomed" : ""} ${isDragging ? "is-dragging" : ""}`} onWheel={handleWheel} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerEnd} onPointerCancel={handlePointerEnd} onDoubleClick={toggleZoom} style={{ touchAction: zoom > 1 ? "none" : "pan-y" }}><motion.img src={lightbox.src} alt={lightbox.alt} animate={{ scale: zoom, x: pan.x, y: pan.y }} transition={isDragging ? { duration: 0 } : { type: "spring", stiffness: 330, damping: 32, mass: 0.55 }} draggable={false} /></div><figcaption><span>{lightbox.label}</span><small>استخدم عجلة الماوس أو الإيماءة للتكبير — نقرتان لتبديل التكبير — زر R لإعادة الضبط</small></figcaption></motion.figure></motion.div>}
   </div>;
 }
