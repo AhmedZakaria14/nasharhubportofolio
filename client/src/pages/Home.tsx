@@ -276,6 +276,17 @@ function CaseArchive({ item, isOpen, onToggle, onOpenImage }: { item: CaseStudy;
   </article>;
 }
 
+/** Editorial Growth Atlas — a compact desktop route rail turns the portfolio chapters into a readable growth map. */
+function AtlasRail({ active }: { active: string }) {
+  return <aside className="atlas-rail" aria-label="مسار أطلس النمو">
+    <a href="#top" className="atlas-rail-brand" aria-label="العودة إلى بداية الأطلس"><img src={assets.mark} alt="" /><span>ATLAS</span></a>
+    <nav className="atlas-rail-route" aria-label="فصول الملف">
+      {navItems.map((item, index) => <a key={item.href} href={item.href} className={active === item.label ? "is-current" : ""}><span>{String(index + 1).padStart(2, "0")}</span><i aria-hidden="true" /><strong>{item.label}</strong></a>)}
+    </nav>
+    <span className="atlas-rail-foot">NASHARHUB / 2026</span>
+  </aside>;
+}
+
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("الرؤية");
@@ -374,6 +385,7 @@ export default function Home() {
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}><a href="#top" className="brand-lockup" aria-label="الانتقال إلى بداية ملف NasharHub"><img src={assets.mark} alt="" className="brand-symbol" /><img src={assets.logo} alt="NasharHub" className="brand-wordmark" /><span className="brand-caption">حلول رقمية متكاملة</span></a><nav className="desktop-nav" aria-label="التنقل الرئيسي">{navItems.map((item) => <a key={item.href} className={active === item.label ? "active" : ""} href={item.href}>{item.label}</a>)}</nav><a className="header-cta" href="#contact">ابدأ حواراً <ArrowUpLeft size={16} /></a><button className="menu-toggle" onClick={() => setMenuOpen((open) => !open)} aria-label="فتح القائمة">{menuOpen ? <X size={22} /> : <Menu size={22} />}</button></header>
     {menuOpen && <motion.div className="mobile-menu" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>{navItems.map((item) => <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}<a href="#contact" onClick={() => setMenuOpen(false)}>ابدأ حواراً <ArrowUpLeft size={16} /></a></motion.div>}
 
+    <AtlasRail active={active} />
     <main id="top">
       <section className="hero-section"><div className="hero-backdrop" style={{ backgroundImage: `url(${assets.hero})` }} /><div className="hero-grain" /><div className="container hero-content"><motion.div className="hero-copy" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}><div className="eyebrow light"><span className="eyebrow-dot" /> NASHARHUB / PORTFOLIO 2026</div><h1>نصنع حضوراً<br /><em>يُقرأ، يُرى،</em><br />ويتحرك إلى الأمام.</h1><p className="hero-lede">من تصميم المواقع إلى الظهور في البحث وإعلانات Google، نجمع الحرفة الرقمية مع قراءة واضحة للنتيجة.</p><div className="hero-actions"><a className="button button-primary" href="#websites">استكشف الأعمال <ArrowDownLeft size={18} /></a><a className="text-link light-link" href="#vision">كيف نعمل؟ <ArrowUpLeft size={16} /></a></div></motion.div><motion.div className="hero-aside" style={{ y: heroShift }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.15 }}><div className="hero-mark-wrap"><img src={assets.mark} alt="رمز NasharHub" /></div><span className="hero-aside-number">06 + 02</span><span className="hero-aside-label">مسارات نمو موثقة<br />داخل قصة واحدة</span></motion.div></div><div className="hero-footer container"><span>SCROLL TO READ</span><span className="route-line" /><span>01 / 04</span></div></section>
 

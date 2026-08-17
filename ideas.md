@@ -59,3 +59,10 @@ Use the provided NasharHub wordmark for the word logo, paired with a standalone 
 
 ### Signature Brand Color
 Signal Blue #1677D2 — the ownable color of forward motion, clarity, and visible progress.
+
+## Style Decisions
+
+- اعتمدنا سكة أطلس رفيعة على سطح المكتب تربط فصول الرؤية والمواقع وSEO والإعلانات برقم ومؤشر واضحين، مع بقاء شريط الهاتف بسيطاً.
+- أصبح رمز NasharHub الهندسي علامة فصل متكررة في كل محطة كبرى، بدل ظهوره حصراً في الرأس والنهاية.
+- تُعرض الملاحظات المنهجية كـ«ملاحظات ميدانية» مرقمة ذات فواصل تحريرية، وليس كبطاقات منتجات متساوية.
+- تختلف مادة كل فصل بوضوح: أرشيف حالات داكن، مكتب تحليل شبكي هادئ لـSEO، وغرفة قيادة مؤشرات ذات شبكة Signal Blue للإعلانات.

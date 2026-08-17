@@ -17,7 +17,7 @@ const adsNarrative: Narrative[] = [
 ];
 
 function NarrativePanel({ id, title, intro, items, tone }: { id: string; title: string; intro: string; items: Narrative[]; tone: "light" | "dark" }) {
-  return <section className={`growth-narrative growth-narrative-${tone}`} aria-labelledby={id}><div className="growth-narrative-heading"><span>قراءة منهجية</span><h3 id={id}>{title}</h3><p>{intro}</p></div><div className="growth-narrative-grid">{items.map((item) => <article key={item.title} className="growth-narrative-card"><span>{item.label}</span><h4>{item.title}</h4><p>{item.body}</p></article>)}</div></section>;
+  return <section className={`growth-narrative growth-narrative-${tone}`} aria-labelledby={id}><div className="growth-narrative-heading"><span>قراءة منهجية</span><h3 id={id}>{title}</h3><p>{intro}</p></div><div className="growth-narrative-grid">{items.map((item, index) => <article key={item.title} className="growth-narrative-card"><header><span>{String(index + 1).padStart(2, "0")}</span><strong>{item.label}</strong></header><div className="growth-narrative-note"><h4>{item.title}</h4><p>{item.body}</p><small>NASHARHUB / FIELD NOTE</small></div></article>)}</div></section>;
 }
 
 export function GrowthNarratives() {
