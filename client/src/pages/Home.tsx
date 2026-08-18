@@ -1169,6 +1169,19 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const blockMediaActions = (event: Event) => {
+      const target = event.target as Element | null;
+      if (target?.closest("img, .media-watermark")) event.preventDefault();
+    };
+    document.addEventListener("contextmenu", blockMediaActions);
+    document.addEventListener("dragstart", blockMediaActions);
+    return () => {
+      document.removeEventListener("contextmenu", blockMediaActions);
+      document.removeEventListener("dragstart", blockMediaActions);
+    };
+  }, []);
+
+  useEffect(() => {
     const sections = ["vision", "websites", "seo", "ads"];
     const observer = new IntersectionObserver(
       entries => {
@@ -1387,7 +1400,7 @@ export default function Home() {
       <main id="top">
         <section className="hero-section">
           <div
-            className="hero-backdrop"
+            className="hero-backdrop media-watermark"
             style={{ backgroundImage: `url(${assets.hero})` }}
           />
           <div className="hero-grain" />
@@ -1477,7 +1490,7 @@ export default function Home() {
               </a>
             </Reveal>
             <Reveal delay={0.16} className="vision-object">
-              <div className="orbit-card">
+              <div className="orbit-card media-watermark">
                 <img src={assets.orbit} alt="مسار نمو رقمي" />
                 <div className="orbit-label">
                   <span>01</span>
