@@ -1173,11 +1173,19 @@ export default function Home() {
       const target = event.target as Element | null;
       if (target?.closest("img, .media-watermark")) event.preventDefault();
     };
+    const blockExportShortcuts = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if ((event.ctrlKey || event.metaKey) && ["s", "p", "u"].includes(key)) {
+        event.preventDefault();
+      }
+    };
     document.addEventListener("contextmenu", blockMediaActions);
     document.addEventListener("dragstart", blockMediaActions);
+    window.addEventListener("keydown", blockExportShortcuts);
     return () => {
       document.removeEventListener("contextmenu", blockMediaActions);
       document.removeEventListener("dragstart", blockMediaActions);
+      window.removeEventListener("keydown", blockExportShortcuts);
     };
   }, []);
 
@@ -2039,7 +2047,7 @@ export default function Home() {
             onClick={event => event.stopPropagation()}
           >
             <div
-              className={`zoom-stage ${zoom > 1 ? "is-zoomed" : ""} ${isDragging ? "is-dragging" : ""}`}
+              className={`zoom-stage media-watermark ${zoom > 1 ? "is-zoomed" : ""} ${isDragging ? "is-dragging" : ""}`}
               onWheel={handleWheel}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
