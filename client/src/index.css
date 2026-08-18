@@ -142,6 +142,18 @@ button { font: inherit; }
 .atlas-rail-route a:hover, .atlas-rail-route a.is-current { color: #0b1020; }.atlas-rail-route a:hover i, .atlas-rail-route a.is-current i { background: #1677d2; transform: scale(1.22); }.atlas-rail-route a:hover strong, .atlas-rail-route a.is-current strong { max-width: 84px; }
 .atlas-rail-foot { display: block; margin-top: 22px; color: rgba(11,16,32,.45); font: 700 7px "Space Grotesk", sans-serif; letter-spacing: .12em; writing-mode: vertical-rl; }
 @media (min-width: 1180px) { .atlas-rail { display: block; } }
+.contact-floaters { position: fixed; z-index: 58; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom)); display: grid; gap: 10px; direction: rtl; }
+.contact-floater { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-width: 126px; min-height: 47px; padding: 0 16px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: #fff; box-shadow: 0 16px 30px rgba(11,16,32,.2), 0 0 0 4px rgba(244,241,233,.78); font: 700 11px "Almarai", sans-serif; text-decoration: none; transition: transform .2s cubic-bezier(.23,1,.32,1), box-shadow .2s ease, filter .2s ease; }
+.contact-floater::before { content: ""; position: absolute; inset: 4px; border: 1px solid rgba(255,255,255,.2); border-radius: inherit; pointer-events: none; }
+.contact-floater:hover { transform: translateY(-4px); box-shadow: 0 20px 35px rgba(11,16,32,.26), 0 0 0 4px rgba(244,241,233,.9); filter: saturate(1.12); }
+.contact-floater:active { transform: translateY(-1px) scale(.97); }
+.contact-floater:focus-visible { outline: 3px solid rgba(22,119,210,.35); outline-offset: 4px; }
+.contact-floater-whatsapp { background: #138b70; }
+.contact-floater-phone { background: #1677d2; }
+.contact-floater span { position: relative; z-index: 1; }
+.contact-floater svg { position: relative; z-index: 1; }
+@media (max-width: 760px) { .contact-floaters { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); gap: 8px; }.contact-floater { min-width: 112px; min-height: 43px; padding: 0 13px; font-size: 10px; box-shadow: 0 12px 24px rgba(11,16,32,.2), 0 0 0 3px rgba(244,241,233,.78); } }
+@media (prefers-reduced-motion: reduce) { .contact-floater { transition: none; } }
 
 /* Recurring chapter markers keep the NasharHub geometric symbol in the evidence path, not only in the brand lockup. */
 .section-index { gap: 10px; }.section-index::before { content: ""; display: inline-block; width: 19px; height: 19px; background: #fff url("/portfolio/brand/nasharhub-mark.png") center / 13px no-repeat; box-shadow: 0 3px 9px rgba(11,16,32,.08); }.light-index .section-index::before { background-color: rgba(255,255,255,.1); box-shadow: none; }.index-brand-mark { display: grid; width: 19px; height: 19px; place-items: center; background: #fff; box-shadow: 0 3px 9px rgba(11,16,32,.08); }.index-brand-mark img { width: 13px; height: 13px; object-fit: contain; }.light-index .index-brand-mark { background: rgba(255,255,255,.1); box-shadow: none; }.index-line { width: 27px; background: repeating-linear-gradient(90deg, #1677d2 0 6px, transparent 6px 9px); }

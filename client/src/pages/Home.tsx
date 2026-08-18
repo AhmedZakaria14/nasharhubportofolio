@@ -16,6 +16,8 @@ import {
   ExternalLink,
   Eye,
   Globe2,
+  MessageCircle,
+  Phone,
   Images,
   Menu,
   Move,
@@ -1108,6 +1110,31 @@ function AtlasRail({ active }: { active: string }) {
   );
 }
 
+function ContactFloaters() {
+  return (
+    <div className="contact-floaters" aria-label="خيارات التواصل السريع">
+      <a
+        className="contact-floater contact-floater-whatsapp"
+        href="https://wa.me/201010742430"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="تواصل معنا عبر واتساب"
+      >
+        <MessageCircle size={21} strokeWidth={2.2} />
+        <span>واتساب</span>
+      </a>
+      <a
+        className="contact-floater contact-floater-phone"
+        href="tel:+201010742430"
+        aria-label="اتصل بنا على 01010742430"
+      >
+        <Phone size={19} strokeWidth={2.2} />
+        <span>اتصل بنا</span>
+      </a>
+    </div>
+  );
+}
+
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("الرؤية");
@@ -1356,6 +1383,7 @@ export default function Home() {
       )}
 
       <AtlasRail active={active} />
+      <ContactFloaters />
       <main id="top">
         <section className="hero-section">
           <div
