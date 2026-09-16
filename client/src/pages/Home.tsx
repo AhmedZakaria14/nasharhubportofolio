@@ -143,6 +143,7 @@ const assets = {
   },
   case5: {
     home: "/portfolio/case5/home_browser.jpg",
+    mobile: "/portfolio/case5/mockup_mobile.jpg",
     secondary: "/portfolio/case5/secondary_browser.jpg",
     board: "/portfolio/case5/actual_screens_board.jpg",
     cards: [
@@ -152,6 +153,7 @@ const assets = {
   },
   case6: {
     home: "/portfolio/case6/home_browser.jpg",
+    mobile: "/portfolio/case6/mockup_mobile.jpg",
     secondary: "/portfolio/case6/secondary_browser.jpg",
     board: "/portfolio/case6/actual_screens_board.jpg",
     cards: [
@@ -454,6 +456,12 @@ const cases: CaseStudy[] = [
         tone: "wide",
       },
       {
+        src: assets.case5.mobile,
+        alt: "موكاب توضيحي للجوال لموقع صفوة الرياض",
+        label: "موكاب توضيحي للجوال",
+        tone: "tall",
+      },
+      {
         src: assets.case5.board,
         alt: "لوحة لقطات صفوة الرياض",
         label: "لقطات الموقع الفعلية",
@@ -489,6 +497,12 @@ const cases: CaseStudy[] = [
         alt: "الواجهة الرئيسية لحصن المملكة",
         label: "الواجهة المنشورة",
         tone: "wide",
+      },
+      {
+        src: assets.case6.mobile,
+        alt: "موكاب توضيحي للجوال لموقع حصن المملكة",
+        label: "موكاب توضيحي للجوال",
+        tone: "tall",
       },
       {
         src: assets.case6.board,
