@@ -916,7 +916,7 @@ function AssetTile({
       onClick={() => onOpen(frame)}
       aria-label={`تكبير: ${frame.label}`}
     >
-      <img src={frame.src} alt={frame.alt} loading="lazy" />
+      <img src={frame.src} alt={frame.alt} loading="eager" decoding="sync" />
       <span>
         <Eye size={14} />
         {frame.label}
@@ -961,7 +961,7 @@ function CaseArchive({
         onClick={onToggle}
         aria-label={`فتح ملف ${item.title} البصري`}
       >
-        <img src={item.cover} alt={`موكاب ${item.title}`} loading="lazy" />
+        <img src={item.cover} alt={`موكاب ${item.title}`} loading="eager" decoding="sync" />
         <span className="image-index">
           {item.frames.length.toString().padStart(2, "0")} ASSETS
         </span>
@@ -1196,6 +1196,46 @@ export default function Home() {
     restDelta: 0.001,
   });
   const heroShift = useTransform(scrollYProgress, [0, 0.22], [0, -30]);
+
+  const preloadImages = (sources: string[]) =>
+    Promise.all(
+      [...new Set(sources)].map(
+        src =>
+          new Promise<void>(resolve => {
+            const image = new Image();
+            image.onload = () => {
+              if (typeof image.decode === "function") {
+                image.decode().catch(() => undefined).finally(resolve);
+              } else {
+                resolve();
+              }
+            };
+            image.onerror = () => resolve();
+            image.src = src;
+            if (image.complete && image.naturalWidth > 0) resolve();
+          })
+      )
+    );
+
+  const toggleCase = async (item: CaseStudy) => {
+    if (openCase === item.id) {
+      setOpenCase(null);
+      return;
+    }
+    await preloadImages(item.frames.map(frame => frame.src));
+    setOpenCase(item.id);
+  };
+
+  useEffect(() => {
+    void preloadImages(
+      cases.flatMap(item => [
+        item.cover,
+        ...item.frames
+          .filter(frame => frame.tone === "tall")
+          .map(frame => frame.src),
+      ])
+    );
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 36);
@@ -1613,9 +1653,7 @@ export default function Home() {
                   <CaseArchive
                     item={item}
                     isOpen={openCase === item.id}
-                    onToggle={() =>
-                      setOpenCase(openCase === item.id ? null : item.id)
-                    }
+                    onToggle={() => void toggleCase(item)}
                     onOpenImage={openImage}
                   />
                 </Reveal>
