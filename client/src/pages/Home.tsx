@@ -92,6 +92,7 @@ const assets = {
   },
   case2: {
     home: "/portfolio/case2/home_browser.jpg",
+    mobile: "/portfolio/case2/mockup_mobile.jpg",
     services: "/portfolio/case2/services_browser.jpg",
     gallery: "/portfolio/case2/gallery_browser.jpg",
     board: "/portfolio/case2/actual_screens_board.jpg",
@@ -109,6 +110,7 @@ const assets = {
   },
   case3: {
     home: "/portfolio/case3/home_browser.jpg",
+    mobile: "/portfolio/case3/mockup_mobile.jpg",
     services: "/portfolio/case3/services_browser.jpg",
     gallery: "/portfolio/case3/services_gallery_browser.jpg",
     board: "/portfolio/case3/actual_screens_board.jpg",
@@ -127,6 +129,7 @@ const assets = {
   },
   case4: {
     home: "/portfolio/case4/home_browser.jpg",
+    mobile: "/portfolio/case4/mockup_mobile.jpg",
     secondary: "/portfolio/case4/secondary_browser.jpg",
     board: "/portfolio/case4/actual_screens_board.jpg",
     cards: [
@@ -292,6 +295,12 @@ const cases: CaseStudy[] = [
         tone: "wide",
       },
       {
+        src: assets.case2.mobile,
+        alt: "موكاب توضيحي للجوال لموقع مؤسسة عالم الفن والهندسة",
+        label: "موكاب توضيحي للجوال",
+        tone: "tall",
+      },
+      {
         src: assets.case2.board,
         alt: "لوحة لقطات موقع عالم الفن والهندسة",
         label: "لقطات الموقع الفعلية",
@@ -349,6 +358,12 @@ const cases: CaseStudy[] = [
         tone: "wide",
       },
       {
+        src: assets.case3.mobile,
+        alt: "موكاب توضيحي للجوال لموقع خدمات الياسمين",
+        label: "موكاب توضيحي للجوال",
+        tone: "tall",
+      },
+      {
         src: assets.case3.board,
         alt: "لوحة لقطات خدمات الياسمين",
         label: "لقطات الموقع الفعلية",
@@ -404,6 +419,12 @@ const cases: CaseStudy[] = [
         alt: "الواجهة الرئيسية للصفا للمعادن",
         label: "الواجهة المنشورة",
         tone: "wide",
+      },
+      {
+        src: assets.case4.mobile,
+        alt: "موكاب توضيحي للجوال لموقع الصفا للمعادن",
+        label: "موكاب توضيحي للجوال",
+        tone: "tall",
       },
       {
         src: assets.case4.board,
