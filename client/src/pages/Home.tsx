@@ -169,11 +169,6 @@ const assets = {
     compare: "/portfolio/seo/rosette_clean/search_console_compare.png",
     sixMonths: "/portfolio/seo/rosette_clean/search_console_six_months.png",
     structure: "/portfolio/seo/rosette_clean/search_result_structure.png",
-    boards: [
-      "/portfolio/seo/search_visibility_board_01.jpg",
-      "/portfolio/seo/search_visibility_board_02.jpg",
-      "/portfolio/seo/search_visibility_board_03.jpg",
-    ],
     panels: [
       "/portfolio/seo/search_visibility_01.jpg",
       "/portfolio/seo/search_visibility_02.jpg",
@@ -1405,12 +1400,6 @@ export default function Home() {
     if (zoom === 1) setZoomLevel(2);
     else resetView();
   };
-  const seoBoardFrames: Frame[] = assets.seo.boards.map((src, index) => ({
-    src,
-    alt: `لوحة سيو موثقة ${index + 1}`,
-    label: `لوحة الظهور ${index + 1}`,
-    tone: "wide",
-  }));
   const seoPanelFrames: Frame[] = assets.seo.panels.map((src, index) => ({
     src,
     alt: `دليل سيو تفصيلي ${index + 1}`,
@@ -1810,19 +1799,9 @@ export default function Home() {
                   <span className="eyebrow">
                     <span className="eyebrow-dot teal-dot" /> EVIDENCE BOARDS
                   </span>
-                  <h3>لوحات الظهور من ملف البورتفوليو</h3>
+                  <h3>أرشيف البحث التفصيلي</h3>
                 </div>
-                <span>03 لوحات مركّبة</span>
-              </div>
-              <div className="shelf-tiles">
-                {seoBoardFrames.map((frame, index) => (
-                  <AssetTile
-                    key={frame.src}
-                    frame={frame}
-                    index={index}
-                    onOpen={openImage}
-                  />
-                ))}
+                <span>13 لوحة مصدر</span>
               </div>
               <button
                 className="archive-toggle"
